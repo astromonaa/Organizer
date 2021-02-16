@@ -1,0 +1,59 @@
+.contacts-container {
+  width: 70%;
+  margin: 0 auto;
+  background: aliceblue;
+  border-radius: 10px;
+  padding: 15px;
+  box-sizing: border-box;
+  -webkit-box-shadow: 0px 0px 22px 5px rgba(0,0,0,0.75);
+  -moz-box-shadow: 0px 0px 22px 5px rgba(0,0,0,0.75);
+  box-shadow: 0px 0px 22px 5px rgba(0,0,0,0.75);
+  height: 100vh;
+  min-height: 100%;
+}
+.block-input {
+  display: block !important;
+}
+.add-contact-btn, .edit-contact-btn {
+  padding: 6.5px 10px !important;
+}
+.contact-inputs {
+  display: none;
+}
+.visible {
+  display: block;
+}
+.hide {
+  display: none !important;
+}
+.contact {
+  display: block !important;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  transition: transform 0.3s;
+  margin-bottom: 10px;
+}
+.contact:hover {
+  transform: scale(1.003);
+  border-color: #000;
+}
+.contact-data {
+  display: flex;
+}
+.contact-delete-btn {
+  margin-right: 40px;
+}
+.contact-add-input, .contact-edit-input {
+  margin-bottom: 10px !important;
+}
+.contact-add-input div, .contact-edit-input div {
+  width: 50%;
+}
+.add-contact-control-btns {
+  width: 30%;
+  display: flex;
+  justify-content: space-between;
+}
+.contact-add-error {
+  color: red;
+}

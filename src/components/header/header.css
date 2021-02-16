@@ -1,0 +1,12 @@
+.header-btn-link {
+  text-decoration: none;
+}
+.page-header {
+  height: 55px;
+  border: 1px solid #000;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: #C0C0C0;
+  margin-bottom: 50px;
+}
