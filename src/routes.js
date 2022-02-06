@@ -8,8 +8,8 @@ export const routes = [
     component: calendarRedux
   },
   {
-    path: '/contacts',
+    path: '/contacts/:id',
     exact: true,
-    component: contactsRedux
+    component: contactsRedux,
   }
 ]

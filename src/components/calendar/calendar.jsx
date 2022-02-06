@@ -37,7 +37,7 @@ export class Calendar extends Component {
     lastRemovedMarkDate: null,
   }
   componentDidMount(){
-   this.calculateCalendarData()
+   this.calculateCalendarData();
    setTimeout(() => {
     this.renderCalendarEvents()
    }, 1000)
@@ -58,7 +58,7 @@ export class Calendar extends Component {
       }
     }
   }
-  addEventRender = (eventDate) => { // Функция рендерит отметку к дате на календаре, при создании собития;
+  renderEventMark = (eventDate) => { // Функция рендерит отметку к дате на календаре, при создании события;
     const day = eventDate.split('.')[0];
     let td_d = Array.from(document.getElementsByTagName("td"))
     let find = td_d.find(el => el.innerText == day)
@@ -95,19 +95,15 @@ export class Calendar extends Component {
     let date = new Date();
     let currentMonth = date.getUTCMonth();
     let currentYear = date.getFullYear();
-
+ 
     let td_d = Array.from(document.getElementsByTagName("td"))
-    td_d.splice(0, first_weekDay-1)
+    td_d.splice(0, first_weekDay-1) // удаляем ненужные ячейки, чтобы первый день месяца совпадал с соответствующим днем недели
     for (let j = 0; j < lastDate; j++){
       td_d[j].innerHTML = 1 + j
-      if ((td_d[j].innerHTML >= today && month >= currentMonth && year >= currentYear) || (month > currentMonth && year >= currentYear) || (year > currentYear)){
-        let contactIcon = document.createElement('div') // Если день больше или равен сегодняшнему дню, то добавляем иконку создания события
-        contactIcon.classList.add('contact-icon')
-        contactIcon.setAttribute('data-day', td_d[j].innerHTML) // Сохраняем соответствующий день в data аттрибуте тега
-        contactIcon.addEventListener('click', (event) => this.openCreateEventBlock(event))
-        td_d[j].append(contactIcon)
+      if (this.dayMoreThanYesterday(td_d[j].innerHTML, today, month, currentMonth, year, currentYear)){
+        this.addCreateEventMark(td_d[j])
       }
-      if (td_d[j].innerText == today && month === currentMonth && year === currentYear){ // Если день сегоднящний, то добавляем соответствующий id
+      if (this.dayIsToday(td_d[j].innerText, today, month, currentMonth, year, currentYear)){ // Если день сегоднящний, то добавляем соответствующий id
         td_d[j].id = 'today';
       }else {
         td_d[j].classList.add('other-day') // Иначе добавляем соответствующий класс
@@ -115,12 +111,40 @@ export class Calendar extends Component {
     }
     let table = document.querySelector('.table-body') // Если количество дней равно 28, то скрываем последнюю строку tr
     let tr = Array.from(table.querySelectorAll('tr'))
-    if (lastDate === 28 && first_weekDay == 1){ // Если число дней месяца равно 28 и первый день месяца - это понедельник, то скрываем последние 2 поля
-      tr[tr.length - 1].classList.add('hide')
-      tr[tr.length - 2].classList.add('hide')
-    }else if (first_weekDay < 6) {
-      tr[tr.length - 1].classList.add('hide') // Иначе скрываем только последнее поле
+    if (this.daysCountIs_28(lastDate) && this.firstWeekDayIsMonday(first_weekDay)){ // Если число дней месяца равно 28 и первый день месяца - это понедельник, то скрываем последние 2 поля
+      this.hideLast_2_Rows(tr)
+    }else if (this.f_WeekDayLessThanSaturd(first_weekDay)) {
+      this.hideLastRow(tr)
     }
+  }
+  daysCountIs_28 = (date) => {
+    return date === 28;
+  }
+  firstWeekDayIsMonday = (first_weekDay) => {
+    return first_weekDay == 1;
+  }
+  hideLast_2_Rows = (rows) => {
+    rows[rows.length - 1].classList.add('hide')
+    rows[rows.length - 2].classList.add('hide')
+  }
+  hideLastRow = (rows) => {
+    rows[rows.length - 1].classList.add('hide')
+  }
+  dayIsToday = (day, today, month, currentMonth, year, currentYear) => {
+    return day == today && month === currentMonth && year === currentYear
+  }
+  f_WeekDayLessThanSaturd = (week_Day) => { // возвращает true если первый день месяца меньше субботы
+    return week_Day < 6
+  }
+  addCreateEventMark = (date) => {
+    let contactIcon = document.createElement('div') // Если день больше или равен сегодняшнему дню, то добавляем иконку создания события
+    contactIcon.classList.add('contact-icon')
+    contactIcon.setAttribute('data-day', date.innerHTML) // Сохраняем соответствующий день в data аттрибуте тега
+    contactIcon.addEventListener('click', event => this.openCreateEventBlock(event))
+    date.append(contactIcon)
+  }
+  dayMoreThanYesterday = (day, today, month, currentMonth, year, currentYear) => {
+    return (day >= today && month >= currentMonth && year >= currentYear) || (month > currentMonth && year >= currentYear) || (year > currentYear)
   }
   clearCalendar = () => {
     let table = document.querySelector('.table-body') // Находим тело календаря
@@ -165,7 +189,10 @@ export class Calendar extends Component {
     let first_weekDay = first_day.getDay();
     let lastDate = Math.ceil((nextMonth.getTime() - first_day.getTime() - oneHour) / oneDay)
     this.clearCalendar()
-    this.renderCalendar(lastDate, today, calendarMonth, calendarYear, first_weekDay)
+    this.renderCalendar(lastDate, today, calendarMonth, calendarYear, first_weekDay);
+    setTimeout(() => {
+      this.renderCalendarEvents()
+    }, 500)
     this.setState({
       Month: calendarMonth,
       year: calendarYear,
@@ -228,7 +255,7 @@ export class Calendar extends Component {
     }else{
       createEvent({eventDate, event, tiedContact})
     }
-    this.addEventRender(eventDate) //Добавляем метку на календаре
+    this.renderEventMark(eventDate) //Добавляем метку на календаре
     this.setState({
       event: '',
       eventFormVisible: false,
@@ -353,7 +380,7 @@ export class Calendar extends Component {
     const { months, Month, year, eventBlockIsVisible, event, eventDate, eventDay, eventFormVisible } = this.state
     const { events, contacts } = this.props;
     const openedDateEvents = events[eventDate] ? events[eventDate] : [];
-    // console.log(events)
+
     const eventBlockClasses = classNames('add-event-block',{
       'visible-create-event-block': eventBlockIsVisible
     })
@@ -362,6 +389,9 @@ export class Calendar extends Component {
     })
     const createEventFormClasses = classNames('hide-event-input', {
       'show-event-input': eventFormVisible
+    })
+    const openCreateEventFormBtnClasses = classNames('open-create-event-form-btn', {
+      'hide': eventFormVisible
     })
     return (
       <Fragment>
@@ -437,7 +467,7 @@ export class Calendar extends Component {
                   )
                 }
               </List>
-              <Button variant="contained" color="primary" onClick={this.openCreateEventForm}>Создать событие</Button>
+              <Button className={openCreateEventFormBtnClasses} variant="contained" color="primary" onClick={this.openCreateEventForm}>Создать событие</Button>
               <div className={createEventFormClasses}>
                 <TextField name='event' onChange={this.handleInputChange} className='event-input error-input' id="outlined-basic" label="Событие" variant="outlined" multiline={true} value={event}/>
                 <div className="event-create-control-btns">

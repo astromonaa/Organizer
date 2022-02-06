@@ -8,6 +8,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
+import CloseIcon from '@material-ui/icons/Close';
 import './contacts.css';
 import { Header } from 'components/header';
 
@@ -200,7 +201,7 @@ export class Contacts extends Component {
   }
   checkDate = (date) => {
     let result;
-    if (date.match(/^(\1(?:19|20)\d\d)(\-)(?:0[1-9]|1[0-9]|2[0-9]|3[0-1])(\-)(?:0[1-9]|1[0-2])$/) === null){
+    if (date.match(/^(\1(?:19|20)\d\d)(\-)(?:0[1-9]|1[0-2])(\-)(?:0[1-9]|1[0-9]|2[0-9]|3[0-1])$/) === null){
       result = false;
     }else {
       result = true;
@@ -209,7 +210,8 @@ export class Contacts extends Component {
   }
   render(){
     const { name, tel, email, note, birthday, inputsAreVisible, editInputsVisible } = this.state;
-    const { contacts } = this.props;
+    const { contacts, openedContact } = this.props;
+
     const inputsClasses = classNames('contact-inputs', {
       'visible': inputsAreVisible,
       'hide': editInputsVisible,
@@ -217,20 +219,27 @@ export class Contacts extends Component {
     const openBlockBtnClasses = classNames('open-contact-add-block-btn', {
       'hide': inputsAreVisible || editInputsVisible,
     })
+    const contactsContainerClasses = classNames('contacts-container', {
+      'opened-contact-info': openedContact,
+    })
+    const contatInfoClasses = classNames('contact-info', {
+      'opened-info-block': openedContact,
+    })
     return(
       <Fragment>
         <Header/>
-        <div className="contacts-container">
+        <div className={contactsContainerClasses}>
           <List>
             {
               contacts.map((contact, idx) => 
-              <ListItem key={idx} className='contact'>
+              <ListItem key={contact._id} className='contact'>
                 <div className="contact-data">
                   <ListItemText primary={contact.name}/>
+                  <Link to={`/contacts/${contact._id}`} onClick={this.cancelContactAdd} className='open-contact-info-link'>Контакт</Link>
                   <DeleteIcon onClick={() => this.deleteContact(contact)} className='contact-delete-btn'/>
                   <EditIcon onClick={() => this.openEditContactBlock(contact._id)} className='contact-edit-btn'/>
                 </div>
-                <div className='contact-inputs' data-id={contact._id}>
+                <div className='contact-inputs editing-inputs' data-id={contact._id}>
                   <TextField onChange={this.handleInputChange} name='name' data-name='name' className='contact-edit-input block-input' label="Иванов Иван Иванович" variant="outlined" value={name}/>
                   <TextField onChange={this.handleInputChange} name='tel' data-name='tel' className='contact-edit-input block-input' label="+7-000-000-0000" variant="outlined" value={tel}/>
                   <TextField onChange={this.handleInputChange} name='email' data-name='email' className='contact-edit-input block-input' label="myMail@gmail.com" variant="outlined" value={email}/>
@@ -244,7 +253,9 @@ export class Contacts extends Component {
               </ListItem>)
             }
           </List>
-          <Button onClick={this.openAddContactBlock} className={openBlockBtnClasses} variant="outlined" color="primary">Добавить контакт</Button>
+          <Link to='/contacts/:id' onClick={this.openAddContactBlock} className='add-contact-btn-link'>
+            <Button className={openBlockBtnClasses} variant="outlined" color="primary">+Добавить контакт</Button>
+          </Link>
           <div className={inputsClasses}>
             <TextField onChange={this.handleInputChange} name='name' data-name='name' className='contact-add-input block-input' label="Иванов Иван Иванович" variant="outlined" value={name}/>
             <TextField onChange={this.handleInputChange} name='tel' data-name='tel' className='contact-add-input block-input' label="+7-000-000-0000" variant="outlined" value={tel}/>
@@ -255,6 +266,18 @@ export class Contacts extends Component {
               <Button onClick={this.addContact} className='add-contact-btn' variant="contained" color="primary" size="small" startIcon={<SaveIcon />}>Добавить</Button>
               <Button onClick={this.cancelContactAdd} variant="contained" color="primary">Отмена</Button>
             </div>
+          </div>
+        </div>
+        <div className={contatInfoClasses}>
+          <Link to='/contacts/:id'>
+            <CloseIcon variant='contained'fontSize='large'/>
+          </Link>
+          <div className="contact-info-items">
+            <span className='contact-info-item-wrapper'>Имя:<span className='contact-info-block-item'> {openedContact ? openedContact.name : ''}</span></span>
+            <span className='contact-info-item-wrapper'>Телефон:<span className='contact-info-block-item'> {openedContact ? openedContact.tel : ''}</span></span>
+            <span className='contact-info-item-wrapper'>Email:<span className='contact-info-block-item'>{openedContact ? openedContact.email : ''}</span></span>
+            <span className='contact-info-item-wrapper'>Заметка:<span className='contact-info-block-item'> {openedContact ? openedContact.note : ''}</span></span>
+            <span className='contact-info-item-wrapper'>Дата рождения:<span className='contact-info-block-item'> {openedContact ? openedContact.birthday : ''}</span></span>
           </div>
         </div>
       </Fragment>

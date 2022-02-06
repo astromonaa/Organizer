@@ -1,6 +1,6 @@
 .contacts-container {
   width: 70%;
-  margin: 0 auto;
+  margin-left: 5%;
   background: aliceblue;
   border-radius: 10px;
   padding: 15px;
@@ -10,6 +10,8 @@
   box-shadow: 0px 0px 22px 5px rgba(0,0,0,0.75);
   height: 100vh;
   min-height: 100%;
+  min-width: 360px;
+  transition: width .5s, margin .5s;
 }
 .block-input {
   display: block !important;
@@ -22,6 +24,12 @@
 }
 .visible {
   display: block;
+  width: 50%;
+  margin: 0 auto;
+}
+.editing-inputs {
+  width: 50%;
+  margin: 0 auto;
 }
 .hide {
   display: none !important;
@@ -46,14 +54,61 @@
 .contact-add-input, .contact-edit-input {
   margin-bottom: 10px !important;
 }
+.add-contact-btn-link {
+  text-decoration: none;
+  display: block;
+  margin: 0 auto;
+  width: 190px;
+}
 .contact-add-input div, .contact-edit-input div {
-  width: 50%;
+  width: 100%;
 }
 .add-contact-control-btns {
-  width: 30%;
+  width: 50%;
   display: flex;
   justify-content: space-between;
 }
 .contact-add-error {
   color: red;
+}
+.contact-info {
+  height: 100%;
+  position: absolute;
+  top: 56px;
+  right: 0;
+  width: 0;
+  overflow: hidden;
+  background: #ccc;
+  transition: width .5s;
+
+}
+.opened-contact-info {
+  width: 49.9%;
+  margin-left: 0;
+}
+.opened-info-block {
+  width: 50%;
+  border: 1px solid #000;
+}
+.contact-info-items {
+  margin-left: 50px;
+  margin-top: 30px;
+  font-size: 25px;
+  font-family: monospace;
+  width: 700px;
+  display: flex;
+  flex-direction: column;
+}
+.contact-info-item-wrapper {
+  display: block;
+  margin-bottom: 20px;
+  position: relative;
+}
+.contact-info-block-item {
+  font-family: fantasy;
+  position: absolute;
+  left: 30%;
+}
+.open-contact-info-link {
+  margin-right: 20px;
 }

@@ -14,12 +14,12 @@ const cors = require('cors');
 const Datastore = require('nedb');
 
 const contacts = new Datastore({
-  filename: path.resolve(__dirname, 'db', 'contacts.json'),
+  filename: path.resolve(__dirname, 'db', 'contacts.db'),
   autoload: true,
 })
 
 const events = new Datastore({
-  filename: path.resolve(__dirname, 'db', 'events.json'),
+  filename: path.resolve(__dirname, 'db', 'events.db'),
   autoload: true,
 })
 

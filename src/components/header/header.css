@@ -5,8 +5,9 @@
   height: 55px;
   border: 1px solid #000;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
   background: #C0C0C0;
   margin-bottom: 50px;
+  padding: 0 20% 0 20%;
 }

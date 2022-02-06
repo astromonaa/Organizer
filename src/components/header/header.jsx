@@ -8,7 +8,7 @@ export class Header extends Component {
     return(
       <header className='page-header'>
         <Button variant="outlined" color="primary">
-          <Link className='header-btn-link' to='/contacts'>Contacts</Link>
+          <Link className='header-btn-link' to='/contacts/:id'>Contacts</Link>
         </Button>
         <Button variant="outlined" color="primary">
           <Link className='header-btn-link' to='/'>Calendar</Link>

@@ -10,18 +10,24 @@ class contactsContainer extends PureComponent {
     listenEvents();
   }
   render(){
-    const { contacts, events, createContact, removeContact, editContact, unlinkContact } = this.props
+    const { contacts, events, createContact, removeContact, editContact, unlinkContact, openedContact, match } = this.props
     return(
-      <Contacts contacts={contacts} events={events} addContact={createContact} del={removeContact} edit={editContact} Unlink={unlinkContact}/>
+      <Contacts contacts={contacts} events={events} addContact={createContact} del={removeContact} edit={editContact} Unlink={unlinkContact} openedContact={openedContact} match={match}/>
     )
   }
 }
 function mapStateToProps(state, ownProps){
+  const { match } = ownProps;
   const events = state.events.get('events').toJS();
-  const contacts = state.contacts.getIn(['entries', 'contacts']).toList().toJS()
+  const contacts = state.contacts.getIn(['entries', 'contacts']);
+  let openedContact = null;
+  if (match && contacts.has(match.params.id)){
+    openedContact = contacts.get(match.params.id).toJS();
+  }
   return {
-    contacts,
+    contacts: contacts.toList().toJS(),
     events,
+    openedContact,
   }
 }
 function mapDispatchToProps(dispatch){
